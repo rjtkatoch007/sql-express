@@ -1,21 +1,22 @@
 const db = require("../utils/db-connection");
 
-const allEntry = (req,res)=>{    
-    const allQuery = `SELECT * FROM users`;
+// --- NEW FUNCTION TO GET ALL USERS ---
+const getAllUsers = (req, res) => {
+    const selectQuery = `SELECT * FROM users`;
 
-    db.execute(allQuery ,(err, results)=>{
-        if(err){
+    db.execute(selectQuery, [], (err, results) => {
+        if (err) {
             console.log(err.message);
             res.status(500).send(err.message);
-            db.end();
             return;
         }
-        console.log(results);
-        res.status(200).send("Showing all users");
-    })
-}
 
-const addEntry = (req, res)=>{
+        console.log("Users retrieved successfully");
+        res.status(200).json(results); // Returns the array of users as JSON
+    });
+};
+
+const addUser = (req, res)=>{
     const {email, name} = req.body;
     const insertQuery = `INSERT INTO users (email, name) VALUES (?,?)`;
 
@@ -31,7 +32,7 @@ const addEntry = (req, res)=>{
     })
 }
 
-const updateEntry = (req, res)=>{
+const updateUser = (req, res)=>{
     const {id} = req.params;
     const {email} = req.body;
     const updateQuery = `UPDATE users SET email=? WHERE id=?`;
@@ -55,7 +56,7 @@ const updateEntry = (req, res)=>{
     })
 }
 
-const deleteEntry = (req, res) => {
+const deleteUser = (req, res) => {
     const {id} = req.params;
     const deleteQuery = `DELETE FROM userS WHERE id= ?`;
 
@@ -78,8 +79,8 @@ const deleteEntry = (req, res) => {
 }
 
 module.exports = {
-    allEntry,
-    addEntry,
-    updateEntry,
-    deleteEntry
+    getAllUsers,
+    addUser,
+    updateUser,
+    deleteUser
 }
