@@ -1,35 +1,43 @@
-const db = require("../utils/db-connection");
+const db = require("../utils/db");
+const buses = require("../models/buses");
 
-const allBuses = (req, res)=>{
-    const {seats: availableSeats} = req.params;
-    const getBuses = `SELECT busNumber FROM buses WHERE availableSeats > ?`;
-    db.execute(getBuses, [availableSeats], (err, results)=>{
-        if(err){
-            console.log(err.message);
-            res.status(500).send(err.message);
-            db.end();
-            return;
-        }
+const allBuses = async (req, res)=>{
+    try {
+        const {seats: availableSeats} = req.params;
+         // Query the database using Sequelize
+        const buses = await Bus.findAll({
+            attributes: ['busNumber'],
+            where: {
+                availableSeats: {
+                    [Op.gt]: availableSeats // Op.gt represents the greater-than (>) operator
+                }
+            }
+        });
 
         console.log("Available Buses");
-        res.status(200).send(results);
-    })
+        return res.status(200).json(buses);
+        
+        
+    } catch (error) {
+        res.status(500).send("Unable to find bus");
+    }
+    
 }
 
-const addBuses = (req, res) =>{
-    const {busNumber, totalSeats, availableSeats} = req.body;
-    const addBusQuery = `INSERT INTO buses (busNumber, totalSeats, availableSeats) VALUES (?,?,?)`;
-
-    db.execute(addBusQuery, [busNumber, totalSeats, availableSeats], (err)=>{
-        if(err){
-            console.log(err.message);
-           res.status(500).send(err.message);
-           db.end();
-           return;
-        }
-        console.log("Bus has been inserted");
-        res.status(200).send(`Bus with number ${busNumber} successfully added`);
-    })   
+const addBuses = async (req, res) =>{
+    try {
+        const {busNumber, totalSeats, availableSeats} = req.body;
+        const buses = await Bus.create({
+            busNumber:busNumber,
+            totalSeats:totalSeats,
+            availableSeats:availableSeats
+        });
+        res.status(201).send(`Bus with number: ${busNumber} is created!`);
+        
+    } catch (error) {
+        res.status(500).send("Unable to add bus");
+    }
+    
 
 }
 

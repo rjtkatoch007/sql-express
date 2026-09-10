@@ -1,21 +1,26 @@
 const express = require('express');
-const db = require('./utils/db-connection');
+const db = require('./utils/db');
 const userRoutes = require("./routes/userRoutes");
 const busRoutes = require("./routes/busRoutes")
 const app = express();
-app.use(express.json());
 const port = 3000;
 
+//models
+const userModel = require('./models/users');
+const busesModel = require('./models/buses');
 
 // Function to handle requests to the root URL
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
-
+app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/buses", busRoutes);
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+db.sync({force:false}).then(()=>{
+    app.listen(port, (err)=>{
+    console.log(`Server is running`);
+    })
+}).catch((err)=>{
+    console.log(err);
+})
