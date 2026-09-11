@@ -6,8 +6,9 @@ const app = express();
 const port = 3000;
 
 //models
-const userModel = require('./models/users');
-const busesModel = require('./models/buses');
+require('./models')
+//const userModel = require('./models/users');
+//const busesModel = require('./models/buses');
 
 // Function to handle requests to the root URL
 app.get('/', (req, res) => {

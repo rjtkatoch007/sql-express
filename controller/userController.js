@@ -1,5 +1,6 @@
 const db = require("../utils/db");
 const User = require('../models/users');
+const Posts = require('../models/posts');
 
 const getAllUsers = async (req, res)=>{
     try {
@@ -26,6 +27,21 @@ const addUser = async (req, res) => {
         res.status(201).send(`User with name: ${name} is created!`);
     } catch (error) {
         res.status(500).send("Unable to make entry.");
+    }
+}
+
+const addingValuesToUserAndPosts = async (req,res) =>{
+    try {
+        const user = await User.create(req.body.user);
+        const Post = await Posts.create({
+            ...req.body.posts,
+            UserId:user.id
+        })
+
+        res.status(201).send({user, Post});
+        
+    } catch (error) {
+        res.status(500).send(error.message);
     }
 }
 
@@ -111,6 +127,7 @@ const deleteUser = (req, res) => {
 module.exports = {
     getAllUsers,
     addUser,
+    addingValuesToUserAndPosts
     //updateUser,
     //deleteUser
 }
