@@ -4,6 +4,7 @@ const busController = require("../controller/busController");
 
 router.get('/available/:seats', busController.allBuses);
 router.post('/add', busController.addBuses);
+router.get("/:id/bookings", busController.getBusBookings);
 
 
 module.exports = router;

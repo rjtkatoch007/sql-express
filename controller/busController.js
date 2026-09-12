@@ -1,5 +1,7 @@
 const db = require("../utils/db");
-const buses = require("../models/buses");
+const Booking = require('../models/bookings');
+const Bus = require('../models/buses');
+const User = require('../models/users');
 
 const allBuses = async (req, res)=>{
     try {
@@ -41,8 +43,35 @@ const addBuses = async (req, res) =>{
 
 }
 
+const getBusBookings = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const bookings = await Booking.findAll({
+            where: {
+                busId: id
+            },
+            attributes: ["id", "seatNumber"],
+            include: [
+                {
+                    model: User,
+                    attributes: ["name", "email"]
+                }
+            ]
+        });
+
+        res.json(bookings);
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+};
+
 
 module.exports={
     allBuses,
-    addBuses
+    addBuses,
+    getBusBookings
 }

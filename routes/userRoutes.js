@@ -6,7 +6,6 @@ const userController = require("../controller/userController");
 router.get('/all', userController.getAllUsers)
 router.post('/add', userController.addUser);
 router.post('/addingUserWithPosts', userController.addingValuesToUserAndPosts);
-//router.put('/update/:id', userController.updateUser);
-//router.delete('/delete/:id', userController.deleteUser);
+router.get("/:id/bookings", userController.getUserBookings);
 
 module.exports = router;
